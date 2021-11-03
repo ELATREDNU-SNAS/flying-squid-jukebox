@@ -2,20 +2,8 @@ const nbsReader = require ("nbs-reader");
 
 module.exports.player = (player, serv) => {
     player.opened = nbsReader('necron.nbs')
-    //console.log(player.opened);
+    console.log(player.opened.Notes);
 player.beginningtick = serv.tickCount
-tps = 1//13.25
-
-/*
-note.bass
-note.bassattack
-note.bd
-note.harp
-note.hat
-note.pling
-note.snare
-*/
-
 
 instruments = [
   'note.harp', //Piano (Air)
@@ -34,24 +22,27 @@ instruments = [
   'note.bit', //Bit (Block of Emerald)                 //DOESN'T PLAY 1.8.9
   'note.banjo', //Banjo (Hay)                          //DOESN'T PLAY 1.8.9
   'note.pling', //Pling (Glowstone)
-
 ]
-//read https://opennbs.org/nbs // create new array of notes
+
 serv.on('tick', (e) => {
+tempo = Math.ceil(player.opened.Tempo/20)
+console.log(tempo);
 player.opened.Notes.forEach((item, i) => {
-  if (i == Math.floor((serv.tickCount - player.beginningtick)) ) {
+  if ((i*tempo) == Math.floor((serv.tickCount - player.beginningtick)) ) {
     //console.log(i);
     item.forEach((inst, t) => {
 if (inst.Inst <= instruments.length) {
-        //console.log(inst);
+
+        pitchNew = 63 * Math.pow(2,((((inst.Key - 33) + (inst.Pitch / 100)) - 12) / 12))
+        
         player._client.write('named_sound_effect', {
                  soundName: instruments[inst.Inst],
                  soundCategory: 0,
                  x: player.position.x,
-                 y: player.position.y,
+                 y: player.position.y + 1,
                  z: player.position.z,
-                 volume: 100,
-                 pitch: 40 + inst.Key //63
+                 volume: inst.Velocity,
+                 pitch:  pitchNew//63
                })
 }
 
