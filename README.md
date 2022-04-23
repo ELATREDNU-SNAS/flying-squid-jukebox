@@ -1,2 +1,9 @@
 # flying-squid-nbs
-Allows the .nbs file format to run on flying squid
+Plays music in the .nbs format within a flying-squid server.
+
+Use example:
+```
+exampleSong = new Song("example.nbs");
+
+exampleSong.play()
+```
