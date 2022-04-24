@@ -1,9 +1,7 @@
 const nbsReader = require ("nbs-reader");
 
-module.exports.server = (serv) => {
-
 class Song {
-  constructor(file) {
+  constructor(file, serv, speed) {
 this.currentSong = nbsReader(file)
 
 this.instruments = [
@@ -24,39 +22,44 @@ this.instruments = [
   'note.banjo', //Banjo (Hay)
   'note.pling', //Pling (Glowstone)
 ]
-
-this.tempo = Math.ceil(this.currentSong.Tempo/20)
+this.tempoOffset = 20
+if (speed > 0) {
+  this.tempoOffset = speed
+}
+this.tempo = Math.ceil(this.currentSong.Tempo/this.tempoOffset)
 
 this.currentTick = 0
+
+this.serv = serv;
   }
 
   play() {
-    serv.on("tick", (e) => {
+    this.serv.on("tick", (e) => {
   this.currentSong.Notes.forEach((item, i) => {
-    if (i * this.tempo == Math.floor(serv.tickCount - this.currentTick)) {
+    if (i * this.tempo == Math.floor(this.serv.tickCount - this.currentTick)) {
       item.forEach((inst, t) => {
         if (inst.Inst <= this.instruments.length) {
-          currentPitch = 63 * Math.pow(2, (inst.Key - 33 + inst.Pitch / 100 - 12) / 12);
-          if (currentPitch > 255) {
-            currentPitch = 255;
+          this.currentPitch = 63 * Math.pow(2, (inst.Key - 33 + inst.Pitch / 100 - 12) / 12);
+          if (this.currentPitch > 255) {
+            this.currentPitch = 255;
           }
 
-          serv.players.forEach((player, i) => {
+          this.serv.players.forEach((player, i) => {
             player._client.write("named_sound_effect", {
               soundName: this.instruments[inst.Inst],
               soundCategory: 0,
-              x: player.position.x,
-              y: player.position.y + 1,
-              z: player.position.z,
+              x: player.position.x + 0.1,
+              y: player.position.y,
+              z: player.position.z + 0.1,
               volume: inst.Velocity,
-              pitch: currentPitch,
+              pitch: this.currentPitch,
             });
           });
         }
       });
 
       if (i == this.currentSong.Length) {
-        this.currentTick = serv.tickCount;
+        this.currentTick = this.serv.tickCount;
       }
     }
   });
@@ -65,7 +68,7 @@ this.currentTick = 0
   }
 
   pause() {
-    serv.on("tick", (e) => {
+    this.serv.on("tick", (e) => {
       this.currentTick = this.currentTick - 1
       if (this.currentTick < 0) {
         this.currentTick = 0
@@ -73,11 +76,13 @@ this.currentTick = 0
     });
   }
 
+  updateSpeed(speedValue) {
+    this.tempoOffset = speedValue
+  }
 }
 
 
 //EXAMPLE: exampleSong = new Song("example.nbs");
 
 
-
-}
+module.exports = Song;
