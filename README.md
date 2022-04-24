@@ -16,11 +16,4 @@ song.play()
 To change the tempo after the song has begun
 ```
 song.updateSpeed(30)
-=======
-Plays music in the .nbs format within a flying-squid server.
-
-Use example:
 ```
-exampleSong = new Song("example.nbs");
-
-exampleSong.play()
