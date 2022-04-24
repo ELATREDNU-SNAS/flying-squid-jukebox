@@ -1,5 +1,9 @@
 # flying-squid-nbs
-Allows the .nbs file format to run on flying squid
+Allows the .nbs file format to run on flying squid.
+
+Place in the plugins folder
+
+Example use:
 ```
 const Song = require('./flying-squid-jukebox/index.js')
 
