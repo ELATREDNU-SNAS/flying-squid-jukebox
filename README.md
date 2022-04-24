@@ -1,20 +1,9 @@
 # flying-squid-nbs
-Allows the .nbs file format to run on flying squid.
+Plays music in the .nbs format within a flying-squid server.
 
-Place in the plugins folder
-
-Example use:
+Use example:
 ```
-const Song = require('./flying-squid-jukebox/index.js')
+exampleSong = new Song("example.nbs");
 
-module.exports.server = function (serv) {
-let song = new Song('example.nbs', serv, 20) // 20 is the default tempo
-
-song.play()
-}
-```
-
-To change the tempo after the song has begun
-```
-song.updateSpeed(30)
+exampleSong.play()
 ```
