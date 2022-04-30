@@ -17,7 +17,9 @@ module.exports.server = function (serv) {
 
 ```
 
-To change the tempo after the song has begun
-```
-song.updateSpeed(30)
+Additional features
+```js
+song.updateSpeed(30) //Change tempo during rendition
+
+song.pause() //Pause the song at the current note
 ```
